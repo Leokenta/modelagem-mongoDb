@@ -1,0 +1,34 @@
+//INSERT DE FUNCIONARIOS (COLEÇÃO:funcionarios)
+
+db.funcionarios.insertOne({"nome":"leonardo kenta",
+"matricula": "1234",
+"cargo": "Arrombado Senior",
+"salario": "R$12.500",
+"setor": "TI",
+"cpf": "11122233344",
+"email": "leonardo@gmail.com",
+"data_admissao": "2024-12-06",
+"status": true,
+"demissoes": {
+    "data_demissao": null,
+    "causa": null},
+"pagamento": {
+    "data_pagamento": "01" }
+})
+
+//INSERT DE REGISTRO (COLECAO:registro)
+
+db.registros.insertOne({"funcionarioId": ObjectId("6759d6aece2eae01c5f032b9"),
+"horarios": [{"data": new Date(), "entrada": "8:00", "saida": "17:00"}],
+"advertencias":[{"data": new Date(), "motivo": "Saiu mais cedo"}],
+"observacoes": "Funcionário em treinamento"});
+
+//CONSULTA USANDO AGGREGATE 
+
+db.registros.aggregate([
+{$lookup:{from: "funcionarios",localField: "funcionarioId",foreignField:"_id", as: "f"}},
+
+{$match: {"f.nome":"leonardo kenta"}},
+
+{$project: {_id: 0, "f.nome": 1, "horarios": 1, "advertencias": 1, "observacoes": 1}}
+]);
